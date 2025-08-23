@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#3BA7FF">
+  <title>بَرا | Bara – پیش‌بینی آب‌وهوا</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Vazirmatn:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            skybrand: '#3BA7FF',
+            silver: '#F3F4F6',
+            softgreen: '#4ADE80',
+          },
+          fontFamily: {
+            sans: ['Vazirmatn','Poppins','system-ui','-apple-system','Segoe UI','Roboto','Arial','sans-serif']
+          },
+        }
+      },
+      darkMode: 'class'
+    }
+  </script>
+  <link rel="stylesheet" href="./css/style.css">
+
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="./assets/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body class="font-sans bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors duration-300 min-h-screen">
+  <div id="app" class="mx-auto max-w-xl md:max-w-3xl lg:max-w-5xl px-3 sm:px-4">
+    <!-- Header / Brand -->
+    <header class="sticky top-0 z-20 backdrop-blur bg-white/70 dark:bg-gray-950/60 border-b border-gray-200 dark:border-gray-800">
+      <div class="flex items-center justify-between py-3">
+        <div class="flex items-center gap-2">
+          <img src="./assets/icons/icon-72.png" alt="Bara logo" class="w-8 h-8 rounded-xl shadow">
+          <div class="leading-tight">
+            <div class="text-lg font-extrabold tracking-tight">
+              <span class="text-skybrand">بَرا</span>
+              <span class="text-gray-500">/</span>
+              <span class="font-semibold">Bara</span>
+            </div>
+            <div class="text-[11px] -mt-0.5 text-gray-500">هوا همیشه همراه تو</div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Install -->
+          <button id="btnInstall" class="hidden px-3 py-1.5 rounded-2xl bg-softgreen text-gray-900 text-xs font-semibold shadow hover:opacity-90 transition">نصب</button>
+          <!-- Theme toggle -->
+          <button id="themeToggle" aria-label="Toggle Dark Mode" class="p-2 rounded-xl bg-silver dark:bg-gray-800 hover:opacity-90 transition">
+            <svg id="iconSun" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" viewBox="0 0 24 24" fill="currentColor"><path d="M6.76 4.84l-1.8-1.79L3.17 4.84l1.79 1.79 1.8-1.79zm10.48 0l1.8-1.79 1.79 1.79-1.79 1.79-1.8-1.79zM12 2h0v2h0V2zm0 18h0v2h0v-2zM4 12H2v0h2v0zm18 0h-2v0h2v0zM6.76 19.16l-1.8 1.79-1.79-1.79 1.79-1.79 1.8 1.79zm10.48 0l1.8 1.79 1.79-1.79-1.79-1.79-1.8 1.79zM12 6a6 6 0 100 12 6 6 0 000-12z"/></svg>
+            <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64 13A9 9 0 1111 2.36 7 7 0 0021.64 13z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Search & Location -->
+      <div class="pb-3">
+        <div class="flex gap-2">
+          <input id="searchInput" type="text" placeholder="نام شهر را وارد کنید..." class="flex-1 px-3 py-2 rounded-2xl bg-silver dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-skybrand text-sm" />
+          <button id="btnSearch" class="px-4 py-2 rounded-2xl bg-skybrand text-white text-sm font-semibold shadow hover:opacity-90 transition">جستجو</button>
+          <button id="btnMyLoc" class="px-3 py-2 rounded-2xl bg-gray-200 dark:bg-gray-800 text-sm font-semibold hover:opacity-90 transition">موقعیت من</button>
+        </div>
+        <div id="searchResults" class="mt-2 hidden rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 overflow-hidden"></div>
+      </div>
+    </header>
+
+    <!-- Current weather -->
+    <main class="py-4 space-y-4">
+      <section id="currentCard" class="rounded-3xl p-4 bg-gradient-to-br from-skybrand/10 to-white dark:from-skybrand/20 dark:to-gray-900 border border-skybrand/20 shadow-sm">
+        <div class="flex items-center justify-between">
+          <div>
+            <div id="locationName" class="text-base font-semibold text-gray-700 dark:text-gray-200">تهران، ایران</div>
+            <div id="conditionText" class="text-sm text-gray-500">صاف</div>
+          </div>
+          <div class="text-right">
+            <div id="tempNow" class="text-5xl font-extrabold">--°</div>
+            <div class="text-xs text-gray-500">به‌روزرسانی: <span id="updatedAt">--:--</span></div>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-2 mt-4 text-center text-sm">
+          <div class="rounded-2xl p-2 bg-white/50 dark:bg-gray-800">
+            💧 رطوبت
+            <div id="humidity" class="text-lg font-bold">--%</div>
+          </div>
+          <div class="rounded-2xl p-2 bg-white/50 dark:bg-gray-800">
+            🌬️ باد
+            <div id="wind" class="text-lg font-bold">-- km/h</div>
+          </div>
+          <div class="rounded-2xl p-2 bg-white/50 dark:bg-gray-800">
+            ⛅ وضعیت
+            <div id="sky" class="text-lg font-bold">--</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Hourly -->
+      <section class="rounded-3xl p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+        <h2 class="font-bold mb-2">پیش‌بینی ۲۴ ساعته</h2>
+        <div id="hourly" class="flex gap-3 overflow-x-auto no-scrollbar py-1"></div>
+      </section>
+
+      <!-- Daily -->
+      <section class="rounded-3xl p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+        <h2 class="font-bold mb-2">پیش‌بینی ۷ روز آینده</h2>
+        <div id="daily" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"></div>
+      </section>
+    </main>
+
+    <footer class="py-10 text-center text-xs text-gray-500">
+      هوا همیشه همراه تو – بَرا
+    </footer>
+  </div>
+
+  <script src="./js/app.js"></script>
+</body>
+</html>

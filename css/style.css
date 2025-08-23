@@ -1,0 +1,7 @@
+/* Custom styles for Bara */
+html, body { height: 100%; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Smooth theme transitions */
+* { transition-property: background-color, color, border-color, fill, stroke; transition-duration: 300ms; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
